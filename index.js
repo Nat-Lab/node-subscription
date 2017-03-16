@@ -1,10 +1,12 @@
 var Nedb = require('nedb');
 
 var NodeSubscription = function ({userdb, projectdb}) {
+
 	var db = {
 		u: new Nedb(userdb),
 		p: new Nedb(projectdb)
 	};
+
 	[db.u, db.p].forEach(d => d.loadDatabase());
 
   var User = function (uid, options) {
@@ -162,7 +164,7 @@ var NodeSubscription = function ({userdb, projectdb}) {
 							if (val.length == 0) {
 								var _opt = options || {};
 								db.u.insert({uid, subscriptions: [], options: _opt});
-							} else db.u.update({uid}, { $set: { options: _opt } }, {}, err => {
+							} else db.u.update({uid}, { $set: { options } }, {}, err => {
 								if(err) reject(err);
 								else resolve(true);
 							});

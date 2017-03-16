@@ -111,7 +111,7 @@ name|String|订阅名称
 示例：
 
 ```Javascript
-> var User = new NS({userdb: 'user.db', projectdb: 'project.db'});
+> var User = (new NS({userdb: 'user.db', projectdb: 'project.db'})).User;
 undefined
 > (new User(1234)).project.new({catalog: 'dev', name: 'dev_status', public: true})
 Promise { <pending> }
