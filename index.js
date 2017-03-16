@@ -175,9 +175,74 @@ var NodeSubscription = function ({userdb, projectdb}) {
 		return {
 			project, subscription, setting
 		};
+	},
+	inspector = {
+		subscriber: {
+			list: function () {
+				return new Promise((resolve, reject) => {
+					db.u.find({}, (err, val) => {
+						if(err) reject(err);
+						else resolve(val);
+					})
+				});
+			},
+			edit: function(uid) {
+				return (function () {
+					var obj = {};
+					['uid', 'subscriptions', 'options'].forEach(i => {
+						obj[i] = function (val) {
+							return new Promise((resolve, reject) => {
+								var edit = {};
+								edit[i] = val;
+								db.u.update({uid}, {
+									$set: edit
+								}, {}, err => {
+									if (err) reject(err);
+									else resolve(true);
+								});
+							});
+						}
+					});
+					return obj;
+				})();
+			}
+		},
+		project: {
+			list: function () {
+				return new Promise((resolve, reject) => {
+					db.p.find({}, (err, val) => {
+						if(err) reject(err);
+						else resolve(val);
+					})
+				});
+			},
+			edit: function (pid) {
+				return (function () {
+					var obj = {};
+					['name', 'catalog', 'content', 'public'].forEach(i => {
+						obj[i] = function (val) {
+							return new Promise((resolve, reject) => {
+								var edit = {};
+								edit[i] = val;
+								db.p.update({_id: pid}, {
+									$set: edit
+								}, {}, err => {
+									if (err) reject(err);
+									else resolve(true);
+								});
+							});
+						}
+					});
+					return obj;
+				})();
+			}
+		}
 	};
 
-	return User;
+	return {
+		User,
+		inspector
+	};
 }
 
 module.exports = NodeSubscription;
